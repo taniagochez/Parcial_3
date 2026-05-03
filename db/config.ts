@@ -18,7 +18,8 @@ export const User = defineTable({
     image: column.text({ optional: true }),
     direccion: column.text({ optional: true }),
     role: column.text({ references: () => Role.columns.id, default: 'user' }),
-    createdAt: column.date({ default: new Date() }),
+    createdAt: column.date({ optional: true }),
+    updatedAt: column.date({ optional: true }), 
   },
 });
 
