@@ -4,7 +4,6 @@ const privateRoutes = ['/protected'];
 const notAuthenticatedRoutes = ['/login', '/register'];
 
 export const onRequest = defineMiddleware(async ({ url, request, locals, redirect }, next) => {
-  // ✅ importación dinámica para evitar problemas de contexto
   const { auth } = await import('./lib/auth');
   
   const session = await auth.api.getSession({ headers: request.headers });

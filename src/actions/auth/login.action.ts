@@ -10,10 +10,14 @@ export const loginUser = defineAction({
   }),
   handler: async ({ email, remember_me }, { cookies }) => {
     if (remember_me) {
-      cookies.set('email', email, { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), path: '/' });
+      cookies.set('email', email, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+        path: '/',
+      });
     } else {
       cookies.delete('email', { path: '/' });
     }
+
     // La verificación real la hace Better Auth desde el cliente
     return { success: true };
   },
