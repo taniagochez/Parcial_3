@@ -11,11 +11,15 @@ export const auth = betterAuth({
       account: Account,
       verification: Verification,
     },
+    // Convierte fechas a timestamps antes de guardar
+    transform: {
+      encode: (val: any) => val instanceof Date ? val.getTime() : val,
+      decode: (val: any) => val,
+    },
   }),
 
-  // ✅ usar process.env en lugar de import.meta.env
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:4321',
+  secret: import.meta.env.BETTER_AUTH_SECRET,
+  baseURL: import.meta.env.BETTER_AUTH_URL ?? 'http://localhost:4321',
 
   emailAndPassword: {
     enabled: true,
@@ -24,8 +28,8 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: import.meta.env.GOOGLE_CLIENT_ID,
+      clientSecret: import.meta.env.GOOGLE_CLIENT_SECRET,
     },
   },
 });
