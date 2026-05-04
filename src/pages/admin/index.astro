@@ -86,25 +86,32 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
                 {u.createdAt ? new Date(u.createdAt).toLocaleDateString('es-SV') : '—'}
               </td>
               <td class="px-4 py-3 flex gap-2">
-                <!-- Editar: pendiente de implementar -->
-                <button
-                  disabled
-                  class="bg-yellow-400 text-white text-xs px-3 py-1 rounded opacity-50 cursor-not-allowed"
-                  title="Pendiente"
-                >
-                  Editar
-                </button>
-                <!-- Eliminar: pendiente de implementar -->
-                <button
-                  disabled
-                  class="bg-red-500 text-white text-xs px-3 py-1 rounded opacity-50 cursor-not-allowed"
-                  title="Pendiente"
-                >
-                  Eliminar
-                </button>
+                
+                <td class="px-4 py-3">
+                  <div class="flex gap-2">
+                    <button
+                      class="btn-edit bg-yellow-400 text-white text-xs px-3 py-1 rounded hover:bg-yellow-500"
+                      data-id={u.id}
+                      data-name={u.name ?? ''}
+                      data-email={u.email}
+                      data-direccion={u.direccion ?? ''}
+                      data-role={u.role}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      class="btn-delete bg-red-500 text-white text-xs px-3 py-1 rounded hover:bg-red-600"
+                      data-id={u.id}
+                      data-name={u.name ?? ''}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
               </td>
             </tr>
           ))}
+          
         </tbody>
       </table>
 
@@ -202,6 +209,47 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
   </div>
 </div>
 
+<!-- Modal Editar Usuario -->
+<div id="modal-edit" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Editar usuario</h2>
+    <form id="form-edit" class="space-y-4">
+      <input type="hidden" name="id" id="edit-id" />
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+        <input type="text" name="name" id="edit-name" required
+          class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" name="email" id="edit-email" required
+          class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+        <input type="text" name="direccion" id="edit-direccion"
+          class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+        <select name="role" id="edit-role"
+          class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">
+          {roles.map(r => (
+            <option value={r.id}>{r.name}</option>
+          ))}
+        </select>
+      </div>
+      <div id="edit-error" class="text-red-500 text-sm hidden"></div>
+      <div class="flex justify-end gap-3 pt-2">
+        <button type="button" id="btn-close-edit"
+          class="px-4 py-2 border rounded-lg text-sm hover:bg-gray-100">Cancelar</button>
+        <button type="submit"
+          class="px-4 py-2 bg-yellow-400 text-white rounded-lg text-sm font-semibold hover:bg-yellow-500">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
   import { actions } from 'astro:actions';
   // @ts-ignore
@@ -212,6 +260,74 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
   const btnClose = document.getElementById('btn-close-modal')!;
   const form = document.getElementById('form-crear') as HTMLFormElement;
   const errorDiv = document.getElementById('form-error')!;
+  const modalEdit = document.getElementById('modal-edit')!;
+  const btnCloseEdit = document.getElementById('btn-close-edit')!;
+  const formEdit = document.getElementById('form-edit') as HTMLFormElement;
+  const editError = document.getElementById('edit-error')!;
+
+  document.querySelectorAll('.btn-edit').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const b = btn as HTMLElement;
+    (document.getElementById('edit-id') as HTMLInputElement).value = b.dataset.id!;
+    (document.getElementById('edit-name') as HTMLInputElement).value = b.dataset.name!;
+    (document.getElementById('edit-email') as HTMLInputElement).value = b.dataset.email!;
+    (document.getElementById('edit-direccion') as HTMLInputElement).value = b.dataset.direccion!;
+    (document.getElementById('edit-role') as HTMLSelectElement).value = b.dataset.role!;
+    modalEdit.classList.remove('hidden');
+  });
+});
+
+btnCloseEdit.addEventListener('click', () => modalEdit.classList.add('hidden'));
+modalEdit.addEventListener('click', (e) => { if (e.target === modalEdit) modalEdit.classList.add('hidden'); });
+
+formEdit.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  editError.classList.add('hidden');
+
+  const { data, error } = await actions.auth.editUser(new FormData(formEdit));
+
+  if (error) {
+    editError.textContent = error.message ?? 'Error al editar usuario';
+    editError.classList.remove('hidden');
+    return;
+  }
+
+  modalEdit.classList.add('hidden');
+  await Swal.fire({ icon: 'success', title: '¡Usuario actualizado!', confirmButtonColor: '#facc15' });
+  window.location.reload();
+});
+
+// Eliminar
+document.querySelectorAll('.btn-delete').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const b = btn as HTMLElement;
+    const confirm = await Swal.fire({
+      icon: 'warning',
+      title: `¿Eliminar a ${b.dataset.name}?`,
+      text: 'Esta acción no se puede deshacer',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Sí, eliminar',
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    const formData = new FormData();
+    formData.append('id', b.dataset.id!);
+
+    const { error } = await actions.auth.deleteUser(formData);
+
+    if (error) {
+      Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+      return;
+    }
+
+    await Swal.fire({ icon: 'success', title: 'Usuario eliminado', confirmButtonColor: '#16a34a' });
+    window.location.reload();
+  });
+});
+
 
   btnOpen.addEventListener('click', () => modal.classList.remove('hidden'));
   btnClose.addEventListener('click', () => modal.classList.add('hidden'));
