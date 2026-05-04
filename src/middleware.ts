@@ -17,7 +17,7 @@ export const onRequest = defineMiddleware(async ({ url, request, locals, redirec
       name: session.user.name,
       emailVerified: session.user.emailVerified,
       role: (session.user as any).role ?? 'user',
-    };
+    } as any;
   }
 
   if (!session && privateRoutes.includes(url.pathname)) {

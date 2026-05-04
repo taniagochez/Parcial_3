@@ -1,5 +1,5 @@
-import { db, Role, User } from 'astro:db';
-import { v4 as UUID } from "uuid";
+import { db, Role, User, eq } from 'astro:db';
+import { auth } from '../src/lib/auth';
 
 export default async function seed() {
   const roles = [
@@ -7,24 +7,34 @@ export default async function seed() {
     { id: 'user', name: 'Usuario del sistema' },
   ];
 
-  const user1 = {
-    id: UUID(),
-    name: 'Admin',
-    email: 'admin@parcial.com',
-    direccion: 'San Marcos',
-    password: null, 
-    role: 'admin',
-  };
-
-  const user2 = {
-    id: UUID(),
-    name: 'Usuario',
-    email: 'user@parcial.com',
-    direccion: 'Nejapa',
-    password: null,
-    role: 'user',
-  };
-
   await db.insert(Role).values(roles);
-  await db.insert(User).values([user1, user2]);
+
+  // Usar la API de Better Auth para que ella misma hashee con scrypt
+  await auth.api.signUpEmail({
+    body: {
+      name: 'Admin',
+      email: 'admin@parcial.com',
+      password: '123456',
+    },
+  });
+
+  await auth.api.signUpEmail({
+    body: {
+      name: 'Usuario',
+      email: 'user@parcial.com',
+      password: '123456',
+    },
+  });
+
+  // Luego actualizar el rol del admin directamente en la DB
+  // porque Better Auth asigna 'user' por defecto
+  await db.update(User)
+    .set({ role: 'admin', direccion: 'San Marcos' })
+    .where(eq(User.email, 'admin@parcial.com'));
+
+  await db.update(User)
+    .set({ direccion: 'Nejapa' })
+    .where(eq(User.email, 'user@parcial.com'));
+
+  console.log('✅ Seed completado');
 }
