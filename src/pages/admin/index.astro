@@ -46,8 +46,14 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
       </div>
     </div>
 
-    <!-- Botón Agregar usuario -->
-    <div class="flex justify-end mb-4">
+    <!-- Botones -->
+    <div class="flex justify-end mb-4 gap-3">
+      <button
+        id="btn-download-pdf"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+      >
+        PDF
+      </button>
       <button
         id="btn-open-modal"
         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition"
@@ -58,7 +64,7 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
 
     <!-- Tabla de usuarios -->
     <div class="bg-white rounded-xl shadow overflow-hidden">
-      <table class="w-full text-sm">
+      <table id="users-table" class="w-full text-sm">
         <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
           <tr>
             <th class="px-4 py-3 text-left">#</th>
@@ -250,6 +256,10 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
   </div>
 </div>
 
+<!-- jsPDF para exportar PDF del lado del cliente -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <script>
   import { actions } from 'astro:actions';
   // @ts-ignore
@@ -264,6 +274,39 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
   const btnCloseEdit = document.getElementById('btn-close-edit')!;
   const formEdit = document.getElementById('form-edit') as HTMLFormElement;
   const editError = document.getElementById('edit-error')!;
+
+  // ── Descargar PDF ──────────────────────────────────────────────
+  document.getElementById('btn-download-pdf')!.addEventListener('click', () => {
+    const { jsPDF } = (window as any).jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(14);
+    doc.text('Panel Admin – Lista de usuarios', 14, 16);
+    doc.setFontSize(9);
+    doc.text(`Generado: ${new Date().toLocaleString('es-SV')}`, 14, 22);
+
+    const table = document.getElementById('users-table') as HTMLTableElement;
+    const headers = Array.from(table.querySelectorAll('thead th'))
+      .map(th => th.textContent?.trim() ?? '')
+      .filter(h => h !== 'Acciones'); // omitir columna de acciones
+
+    const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr =>
+      Array.from(tr.querySelectorAll('td'))
+        .slice(0, -1) // omitir última celda (acciones)
+        .map(td => td.textContent?.trim() ?? '')
+    );
+
+    (doc as any).autoTable({
+      head: [headers],
+      body: rows,
+      startY: 28,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [22, 163, 74] },
+    });
+
+    doc.save('usuarios.pdf');
+  });
+  // ──────────────────────────────────────────────────────────────
 
   document.querySelectorAll('.btn-edit').forEach(btn => {
   btn.addEventListener('click', () => {
