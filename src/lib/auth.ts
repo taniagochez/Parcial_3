@@ -11,11 +11,6 @@ export const auth = betterAuth({
       account: Account,
       verification: Verification,
     },
-    // Convierte fechas a timestamps antes de guardar
-    transform: {
-      encode: (val: any) => val instanceof Date ? val.getTime() : val,
-      decode: (val: any) => val,
-    },
   }),
 
   secret: import.meta.env.BETTER_AUTH_SECRET,
@@ -30,6 +25,21 @@ export const auth = betterAuth({
     google: {
       clientId: import.meta.env.GOOGLE_CLIENT_ID,
       clientSecret: import.meta.env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+
+  // 👇 Esto le dice a Better Auth que incluya el campo role en la sesión
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: 'user',
+        required: false,
+      },
+      direccion: {
+        type: 'string',
+        required: false,
+      },
     },
   },
 });
