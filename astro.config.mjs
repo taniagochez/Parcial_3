@@ -11,6 +11,7 @@ import auth from "auth-astro";
 export default defineConfig( {
   integrations: [tailwind(), db(), auth()],
   output: "server",
+  
   adapter: netlify(),
   // experimental: {
   //   actions: true

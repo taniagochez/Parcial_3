@@ -1,8 +1,7 @@
 import { defineAction } from 'astro:actions';
 import { z } from 'astro:schema';
 import { db, eq, User } from 'astro:db';
-import { v4 as UUID } from 'uuid';
-import bcrypt from 'bcryptjs';
+import { auth } from '../../lib/auth';
 
 export const createUser = defineAction({
   accept: 'form',
@@ -16,25 +15,21 @@ export const createUser = defineAction({
   handler: async ({ name, email, password, direccion, role }) => {
     // Verificar si el email ya existe
     const existing = await db.select().from(User).where(eq(User.email, email));
-    const existingUser = existing.find(u => u.email === email);
-    if (existingUser) {
-      throw new Error('Ya existe un usuario con ese email');
-    }
+    if (existing.length) throw new Error('Ya existe un usuario con ese email');
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Usar Better Auth para crear el usuario (hashea con scrypt)
+    await auth.api.signUpEmail({
+      body: { name, email, password },
+    });
 
-    const newUser = {
-      id: UUID(),
-      name,
-      email,
-      password: hashedPassword,
-      direccion: direccion ?? null,
-      role,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    await db.insert(User).values(newUser);
+    // Actualizar rol y dirección que Better Auth no maneja
+    await db.update(User)
+      .set({ 
+        role, 
+        direccion: direccion ?? null,
+        updatedAt: new Date(),
+      })
+      .where(eq(User.email, email));
 
     return { name, email };
   },
