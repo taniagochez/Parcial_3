@@ -47,18 +47,18 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
     </div>
 
     <!-- Botones -->
-    <div class="flex justify-end mb-4 gap-3">
+      <div class="flex justify-end mb-4 gap-3">
       <button
         id="btn-download-pdf"
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
       >
-        PDF
+      PDF 
       </button>
       <button
         id="btn-open-modal"
         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition"
       >
-        + Agregar usuario
+      + Agregar usuario
       </button>
     </div>
 
@@ -275,38 +275,39 @@ const adminCount = allUsers.filter(u => u.role === 'admin').length;
   const formEdit = document.getElementById('form-edit') as HTMLFormElement;
   const editError = document.getElementById('edit-error')!;
 
-  // ── Descargar PDF ──────────────────────────────────────────────
-  document.getElementById('btn-download-pdf')!.addEventListener('click', () => {
-    const { jsPDF } = (window as any).jspdf;
-    const doc = new jsPDF();
 
-    doc.setFontSize(14);
-    doc.text('Panel Admin – Lista de usuarios', 14, 16);
-    doc.setFontSize(9);
-    doc.text(`Generado: ${new Date().toLocaleString('es-SV')}`, 14, 22);
+document.getElementById('btn-download-pdf')!.addEventListener('click', async () => {
+  const { jsPDF } = await import('jspdf');
+  const { default: autoTable } = await import('jspdf-autotable');
 
-    const table = document.getElementById('users-table') as HTMLTableElement;
-    const headers = Array.from(table.querySelectorAll('thead th'))
-      .map(th => th.textContent?.trim() ?? '')
-      .filter(h => h !== 'Acciones'); // omitir columna de acciones
+  const doc = new jsPDF();
 
-    const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr =>
-      Array.from(tr.querySelectorAll('td'))
-        .slice(0, -1) // omitir última celda (acciones)
-        .map(td => td.textContent?.trim() ?? '')
-    );
+  doc.setFontSize(14);
+  doc.text('Panel Admin - Lista de usuarios', 14, 16);
+  doc.setFontSize(9);
+  doc.text(`Generado: ${new Date().toLocaleString('es-SV')}`, 14, 22);
 
-    (doc as any).autoTable({
-      head: [headers],
-      body: rows,
-      startY: 28,
-      styles: { fontSize: 9 },
-      headStyles: { fillColor: [22, 163, 74] },
-    });
+  const table = document.getElementById('users-table') as HTMLTableElement;
+  const headers = Array.from(table.querySelectorAll('thead th'))
+    .map(th => th.textContent?.trim() ?? '')
+    .filter(h => h !== 'Acciones');
 
-    doc.save('usuarios.pdf');
+  const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr =>
+    Array.from(tr.querySelectorAll('td'))
+      .slice(0, -1)
+      .map(td => td.textContent?.trim() ?? '')
+  );
+
+  autoTable(doc, {
+    head: [headers],
+    body: rows,
+    startY: 28,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [22, 163, 74] },
   });
-  // ──────────────────────────────────────────────────────────────
+
+  doc.save('usuarios.pdf');
+});
 
   document.querySelectorAll('.btn-edit').forEach(btn => {
   btn.addEventListener('click', () => {
