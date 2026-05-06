@@ -9,32 +9,35 @@ export default async function seed() {
 
   await db.insert(Role).values(roles);
 
-  // Usar la API de Better Auth para que ella misma hashee con scrypt
-  await auth.api.signUpEmail({
-    body: {
-      name: 'Admin',
-      email: 'admin@parcial.com',
-      password: '123456',
-    },
-  });
+  const users = [
+    // Admins con nombres reales
+    { name: 'Admin',            email: 'admin@parcial.com',     password: '123456', role: 'admin', direccion: 'San Marcos' },
+    { name: 'Eunice López',     email: 'eunice@parcial.com',    password: '123456', role: 'admin', direccion: 'Santa Tecla' },
+    { name: 'Katherine de León',email: 'katherine@parcial.com', password: '123456', role: 'admin', direccion: 'Antiguo Cuscatlán' },
+    { name: 'Tania Garay',      email: 'tania@parcial.com',     password: '123456', role: 'admin', direccion: 'Soyapango' },
+    { name: 'Cristian Parada',  email: 'cristian@parcial.com',  password: '123456', role: 'admin', direccion: 'Apopa' },
+    { name: 'Luis Mejía',       email: 'luis@parcial.com',      password: '123456', role: 'admin', direccion: 'Ilopango' },
+    // Usuarios normales
+    { name: 'Usuario',          email: 'user@parcial.com',      password: '123456', role: 'user',  direccion: 'Nejapa' },
+    { name: 'Amanda Escoto',    email: 'amanda@parcial.com',    password: '123456', role: 'user',  direccion: 'Mejicanos' },
+    { name: 'Carlos Rivas',     email: 'carlos@parcial.com',    password: '123456', role: 'user',  direccion: 'San Salvador' },
+    { name: 'María Hernández',  email: 'maria@parcial.com',     password: '123456', role: 'user',  direccion: 'Cuscatancingo' },
+    { name: 'Jorge Portillo',   email: 'jorge@parcial.com',     password: '123456', role: 'user',  direccion: 'Ciudad Delgado' },
+    { name: 'Sofía Castillo',   email: 'sofia@parcial.com',     password: '123456', role: 'user',  direccion: 'San Martín' },
+    { name: 'Diego Fuentes',    email: 'diego@parcial.com',     password: '123456', role: 'user',  direccion: 'Tonacatepeque' },
+    { name: 'Valeria Morales',  email: 'valeria@parcial.com',   password: '123456', role: 'user',  direccion: 'Panchimalco' },
+    { name: 'René Gutiérrez',   email: 'rene@parcial.com',      password: '123456', role: 'user',  direccion: 'Rosario de Mora' },
+  ];
 
-  await auth.api.signUpEmail({
-    body: {
-      name: 'Usuario',
-      email: 'user@parcial.com',
-      password: '123456',
-    },
-  });
+  for (const u of users) {
+    await auth.api.signUpEmail({
+      body: { name: u.name, email: u.email, password: u.password },
+    });
 
-  // Luego actualizar el rol del admin directamente en la DB
-  // porque Better Auth asigna 'user' por defecto
-  await db.update(User)
-    .set({ role: 'admin', direccion: 'San Marcos' })
-    .where(eq(User.email, 'admin@parcial.com'));
+    await db.update(User)
+      .set({ role: u.role, direccion: u.direccion })
+      .where(eq(User.email, u.email));
+  }
 
-  await db.update(User)
-    .set({ direccion: 'Nejapa' })
-    .where(eq(User.email, 'user@parcial.com'));
-
-  console.log('✅ Seed completado');
+  console.log('✅ Seed completado con 15 usuarios');
 }

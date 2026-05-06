@@ -1,4 +1,3 @@
-// db/config.ts
 import { column, defineDb, defineTable } from 'astro:db';
 
 export const Role = defineTable({
@@ -19,7 +18,7 @@ export const User = defineTable({
     direccion: column.text({ optional: true }),
     role: column.text({ references: () => Role.columns.id, default: 'user' }),
     createdAt: column.date({ optional: true }),
-    updatedAt: column.date({ optional: true }), 
+    updatedAt: column.date({ optional: true }),
   },
 });
 
