@@ -28,7 +28,6 @@ export const auth = betterAuth({
     },
   },
 
-  // 👇 Esto le dice a Better Auth que incluya el campo role en la sesión
   user: {
     additionalFields: {
       role: {
@@ -42,4 +41,44 @@ export const auth = betterAuth({
       },
     },
   },
+
+  advanced: {
+    database: {
+      generateId: () => crypto.randomUUID(),
+    },
+  },
+
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          return {
+            data: {
+              ...session,
+              createdAt: new Date(session.createdAt),
+              updatedAt: new Date(session.updatedAt),
+              expiresAt: new Date(session.expiresAt),
+            }
+          };
+        },
+      },
+    },
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              createdAt: new Date(user.createdAt),
+              updatedAt: new Date(user.updatedAt),
+            }
+          };
+        },
+      },
+    },
+  },
+  trustedOrigins: [
+    'http://localhost:4321',
+    'https://equipo1parcial3.netlify.app',
+  ],
 });
