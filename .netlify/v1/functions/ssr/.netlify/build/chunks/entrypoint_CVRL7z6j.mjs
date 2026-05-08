@@ -1,5 +1,5 @@
 import { p as pipelineSymbol, A as AstroError, a as ActionCalledFromServerError } from './params-and-props_CgVkSr_h.mjs';
-import { c as createActionsProxy, d as defineAction } from './ssr-function_BJTbz0Ql.mjs';
+import { c as createActionsProxy, d as defineAction } from './ssr-function_I1qGpvUG.mjs';
 import '@astrojs/internal-helpers/path';
 import * as z from 'zod/v4';
 import { auth as auth$1 } from './auth_DLZ7fYSi.mjs';

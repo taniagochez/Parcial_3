@@ -1,9 +1,9 @@
-import { r as renderScript } from './base_DXlYV7mF.mjs';
 import { c as createComponent } from './astro-component_qX7jQV2U.mjs';
 import 'piccolore';
 import { a3 as addAttribute, Q as renderTemplate, z as maybeRenderHead } from './params-and-props_CgVkSr_h.mjs';
-import { r as renderComponent } from './ssr-function_BJTbz0Ql.mjs';
-import { $ as $$MainLayout } from './MainLayout_B4GdXu5U.mjs';
+import { r as renderComponent } from './ssr-function_I1qGpvUG.mjs';
+import { r as renderScript } from './script_tDPncAlc.mjs';
+import { $ as $$MainLayout } from './MainLayout_Hb2OyVvR.mjs';
 import { d as db, U as User, R as Role } from './_astro_db_5sXTZHNR.mjs';
 
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {

@@ -1,4 +1,4 @@
-import { f as fetchWithRedirects, g as getConfiguredImageService, i as imageConfig } from './_astro_assets_Be9mZxm3.mjs';
+import { f as fetchWithRedirects, g as getConfiguredImageService, i as imageConfig } from './_astro_assets_jp2nGdW-.mjs';
 import { isRemotePath } from '@astrojs/internal-helpers/path';
 import { isRemoteAllowed } from '@astrojs/internal-helpers/remote';
 import * as mime from 'mrmime';

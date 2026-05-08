@@ -1,10 +1,9 @@
-import './base_DXlYV7mF.mjs';
 import { c as createComponent } from './astro-component_qX7jQV2U.mjs';
 import 'piccolore';
 import { Q as renderTemplate, z as maybeRenderHead } from './params-and-props_CgVkSr_h.mjs';
-import { r as renderComponent } from './ssr-function_BJTbz0Ql.mjs';
-import { $ as $$MainLayout } from './MainLayout_B4GdXu5U.mjs';
-import { $ as $$Image } from './_astro_assets_Be9mZxm3.mjs';
+import { r as renderComponent } from './ssr-function_I1qGpvUG.mjs';
+import { $ as $$MainLayout } from './MainLayout_Hb2OyVvR.mjs';
+import { $ as $$Image } from './_astro_assets_jp2nGdW-.mjs';
 
 const $$Protected = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);

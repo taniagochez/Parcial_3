@@ -1,9 +1,8 @@
-import './base_DXlYV7mF.mjs';
 import { c as createComponent } from './astro-component_qX7jQV2U.mjs';
 import 'piccolore';
 import { Q as renderTemplate, z as maybeRenderHead } from './params-and-props_CgVkSr_h.mjs';
-import { r as renderComponent } from './ssr-function_BJTbz0Ql.mjs';
-import { $ as $$MainLayout } from './MainLayout_B4GdXu5U.mjs';
+import { r as renderComponent } from './ssr-function_I1qGpvUG.mjs';
+import { $ as $$MainLayout } from './MainLayout_Hb2OyVvR.mjs';
 
 const $$Index = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate`${renderComponent($$result, "MainLayout", $$MainLayout, {}, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<h1 class="text-3xl">Home Page</h1> ` })}`;
