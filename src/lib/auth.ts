@@ -39,7 +39,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     'http://localhost:4321',
-    'https://equipo1parcial3.netlify.app',
+    'https://parcial3equipo1uls.netlify.app',
   ],
   advanced: {
     database: {
