@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 interface Props {
     title?: string;
     isActive?:boolean;
@@ -16,29 +18,20 @@ const {title, isActive} = Astro.props;
   </head>
   <body>
 
-<!-- component -->
-<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 <div class="bg-no-repeat bg-cover bg-center relative" style="background-image: url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1952&q=80);"><div class="absolute bg-gradient-to-b from-purple-900 to-black opacity-80 inset-0 z-0"></div>
   <div class="min-h-screen sm:flex sm:flex-row mx-0 justify-center">
       <div class="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10">
         <div class="self-start hidden lg:flex flex-col text-white">
           <img src="" class="mb-3">
-          <!-- Cohete SVG -->
           <div class="mb-6">
             <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Cuerpo del cohete -->
               <path d="M50 8 C38 20 34 38 34 52 L50 60 L66 52 C66 38 62 20 50 8Z" fill="#c4b5fd" stroke="#7c3aed" stroke-width="1.5"/>
-              <!-- Ventana -->
               <circle cx="50" cy="36" r="8" fill="#1a1a2e" stroke="#a78bfa" stroke-width="1.5"/>
               <circle cx="50" cy="36" r="5" fill="#4c1d95" opacity="0.8"/>
-              <!-- Ala izquierda -->
               <path d="M34 52 L22 68 L34 64 Z" fill="#7c3aed" stroke="#5b21b6" stroke-width="1"/>
-              <!-- Ala derecha -->
               <path d="M66 52 L78 68 L66 64 Z" fill="#7c3aed" stroke="#5b21b6" stroke-width="1"/>
-              <!-- Llama principal -->
               <path d="M44 60 Q50 80 50 88 Q50 80 56 60 Z" fill="#f59e0b" opacity="0.95"/>
               <path d="M46 60 Q50 75 50 83 Q50 75 54 60 Z" fill="#fde68a" opacity="0.9"/>
-              <!-- Estrellas decorativas -->
               <circle cx="18" cy="22" r="1.5" fill="white" opacity="0.8"/>
               <circle cx="82" cy="15" r="1" fill="white" opacity="0.6"/>
               <circle cx="25" cy="45" r="1" fill="white" opacity="0.5"/>

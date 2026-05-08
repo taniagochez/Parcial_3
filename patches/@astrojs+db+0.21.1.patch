@@ -1,0 +1,17 @@
+diff --git a/node_modules/@astrojs/db/dist/runtime/index.js b/node_modules/@astrojs/db/dist/runtime/index.js
+index 9e6c61d..2fc271e 100644
+--- a/node_modules/@astrojs/db/dist/runtime/index.js
++++ b/node_modules/@astrojs/db/dist/runtime/index.js
+@@ -15,7 +15,11 @@ const dateType = customType({
+     return "text";
+   },
+   toDriver(value) {
+-    return value.toISOString();
++  if (!value) return null;
++  if (typeof value === 'string' || typeof value === 'number') {
++    return new Date(value).toISOString();
++  }
++  return value.toISOString();
+   },
+   fromDriver(value) {
+     if (!isISODateString(value)) {
