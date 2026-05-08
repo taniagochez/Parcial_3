@@ -12,22 +12,18 @@ export const auth = betterAuth({
       verification: Verification,
     },
   }),
-
   secret: import.meta.env.BETTER_AUTH_SECRET,
   baseURL: import.meta.env.BETTER_AUTH_URL ?? 'http://localhost:4321',
-
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
   },
-
   socialProviders: {
     google: {
       clientId: import.meta.env.GOOGLE_CLIENT_ID,
       clientSecret: import.meta.env.GOOGLE_CLIENT_SECRET,
     },
   },
-
   user: {
     additionalFields: {
       role: {
@@ -41,44 +37,13 @@ export const auth = betterAuth({
       },
     },
   },
-
+  trustedOrigins: [
+    'http://localhost:4321',
+    'https://equipo1parcial3.netlify.app',
+  ],
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
   },
-
-  databaseHooks: {
-    session: {
-      create: {
-        before: async (session) => {
-          return {
-            data: {
-              ...session,
-              createdAt: new Date(session.createdAt),
-              updatedAt: new Date(session.updatedAt),
-              expiresAt: new Date(session.expiresAt),
-            }
-          };
-        },
-      },
-    },
-    user: {
-      create: {
-        before: async (user) => {
-          return {
-            data: {
-              ...user,
-              createdAt: new Date(user.createdAt),
-              updatedAt: new Date(user.updatedAt),
-            }
-          };
-        },
-      },
-    },
-  },
-  trustedOrigins: [
-    'http://localhost:4321',
-    'https://equipo1parcial3.netlify.app',
-  ],
 });
