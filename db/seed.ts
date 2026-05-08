@@ -51,7 +51,7 @@ export default async function seed() {
     }).catch(() => console.log(`Usuario ${u.email} ya existe, saltando...`));
 
     await db.update(User)
-      .set({ role: u.role, direccion: u.direccion })
+      .set({ role: u.role, direccion: u.direccion, emailVerified: Date.now(), })
       .where(eq(User.email, u.email));
   }
 
